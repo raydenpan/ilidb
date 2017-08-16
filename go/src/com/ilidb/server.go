@@ -10,7 +10,7 @@ func main() {
 	fmt.Printf("Starting Ilidb.com server...\n")
 
 	// Create file server for static html files
-	fs := http.FileServer(http.Dir("../../../../html"))
+	fs := http.FileServer(http.Dir("../../html"))
 
 	//Main page, index.html
 	http.Handle("/", fs)
