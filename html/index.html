@@ -1,6 +1,21 @@
 <!doctype html>
 <html>
-    <body>
-        <p>Hellow!</p>
-    </body>
+<body>
+    <p>Hellow!</p>
+    <p>CHOOSE LOGIN METHOD</p>
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
+
+    <div id="status">
+    </div>
+</body>
+<footer>
+    <script src='/js/fb_login.js'></script>
+    <script src="/js/ilidb.js"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            checkLogin();
+        };
+    </script>
+</footer>
 </html>
