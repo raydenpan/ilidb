@@ -1,16 +1,35 @@
 <!doctype html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/ilidb.css">
+    </head>
 <body>
-    <p>Hellow!</p>
-    <p>CHOOSE LOGIN METHOD</p>
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-    </fb:login-button>
+    <div id="page">
+        <div id="top">
+            <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+            </fb:login-button>
+            <div id="status">
+            </div>
+        </div>
+        <div id="body">
+            <div id="main">
+                <article class="hero">
 
-    <div id="status">
+                </article>
+                <article class="standard">
+                        
+                </article>
+            </div>
+            <div id="side">
+                <article class="hero">
+                </article>
+                <article class="standard">  
+                </article>
+            </div>
+        </div>
     </div>
 </body>
 <footer>
-    
     <script src='/js/fb_login.js'></script>
     <script src="/js/ilidb.js"></script>
     <script type="text/javascript">
