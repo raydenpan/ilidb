@@ -17,7 +17,7 @@ func authenticateHandler(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic("aaaa")
 	}
-	fmt.Printf("User POSTed his FB access token:" + tFacebookToken.Value + "\n")
+	fmt.Printf("User POSTed FB access token:" + tFacebookToken.Value + "\n")
 
 	var tLoginResult common.LoginResult
 	tLoginResult = auth.HandleFacebookLogin(tFacebookToken)
