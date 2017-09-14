@@ -1,7 +1,7 @@
 function checkLogin() {
 	if (document.cookie.indexOf("name") >= 0) {
   		// I've been here before.
-  		alert("hello again "+readCookie("name"));
+  		//alert("hello again " + readCookie("name"));
 	}
 }
 function readCookie(name) {

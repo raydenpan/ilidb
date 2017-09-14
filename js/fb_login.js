@@ -31,30 +31,31 @@ function postToServer(accessToken) {
 	var xhttp;
 	if (window.XMLHttpRequest) {
 	    xhttp = new XMLHttpRequest();
-	    } else {
+	} else {
 	    // code for IE6, IE5
 	    xhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	xhttp.onreadystatechange = function() {
-	// inline function to check the status
-	// of our request
-	// this is called on every state change
-	if (xhttp.readyState === 4 &&
-	  xhttp.status === 200) {
-	  console.log("Setting cookie...");
-		console.log(xhttp.responseText);
-		var jsonResponse = JSON.parse(xhttp.responseText);
-		setCookie(jsonResponse.Name, jsonResponse.Id, jsonResponse.Token);
-	}
+        // inline function to check the status
+        // of our request
+        // this is called on every state change
+        if (xhttp.readyState === 4 &&
+        xhttp.status === 200) {
+            console.log("Setting cookie...");
+            console.log(xhttp.responseText);
+            var jsonResponse = JSON.parse(xhttp.responseText);
+            setCookie(jsonResponse.Name, jsonResponse.Id, jsonResponse.Token);
+        }
 	};
  	xhttp.open("POST", "/authenticate", true);
 	xhttp.setRequestHeader("Content-type", "application/json");
 	xhttp.send("{\"value\":\"" + accessToken + "\"}");
 }
 
+// Set cookie to keep user logged in
 function setCookie(name, id, token) {
     var d = new Date();
-	// 10 years expirery date
+	// 10 years expiry date
     d.setTime(d.getTime() + 315360000);
     var expires = d.toUTCString();
     document.cookie = "name=" + name + "; expires=" + expires + "; path=/";
@@ -73,7 +74,7 @@ function checkLoginState() {
 
 window.fbAsyncInit = function() {
     FB.init({
-        appId      : '180292159051019',
+        appId      : '180292159051019', // ILIDB app id
         cookie     : true,  // enable cookies to allow the server to access 
                             // the session
         xfbml      : true,  // parse social plugins on this page
