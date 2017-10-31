@@ -3,3 +3,5 @@
 *.exe
 *.a
 go/pkg/
+img
+.vscode
