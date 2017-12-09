@@ -3,8 +3,7 @@ package web
 //BookVote User vote for a book
 type BookVote struct {
 	BookID string
-	Rating string
-	UserID string
+	Rating int
 }
 
 //FacebookAccessTokenResponse Facebook access token response

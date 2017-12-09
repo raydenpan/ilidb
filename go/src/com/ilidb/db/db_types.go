@@ -30,7 +30,7 @@ type LoginResult struct {
 //BookVote User vote for a book
 type BookVote struct {
 	BookID    string
-	Rating    string
+	Rating    int
 	Timestamp time.Time
 }
 

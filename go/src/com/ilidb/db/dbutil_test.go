@@ -75,6 +75,31 @@ func TestAddLoginTokenFail(t *testing.T) {
 	}
 }
 
+func TestFetchUserSession(t *testing.T) {
+	tFaceBookID := "adas43hgffd"
+	tUserName := "aName Nameaa"
+	tLoginToken := LoginToken{Value: "sdasdsa", Created: time.Now()}
+	success := CreateUser(tFaceBookID, tUserName, tLoginToken)
+	if !success {
+		t.Fail()
+		println("Failed to create user")
+	}
+	success = AddLoginToken(tFaceBookID, tLoginToken)
+	if !success {
+		t.Fail()
+		println("Failed to add LoginToken")
+	}
+	tUserID, err := FetchUserSession(tFaceBookID, tLoginToken.Value)
+	if nil != err {
+		t.Fail()
+		println("Failed to fetch user session for UserID: " + tUserID)
+	}
+	if !DeleteUserByName(tUserName) {
+		t.Fail()
+		println("Failed to delete test user")
+	}
+}
+
 func TestCreateFetchRemoveBook(t *testing.T) {
 	tBook := Book{AuthorName: "Kalle Anka", AuthorID: "23482970", ID: "23234984", Title: "The Master and Margarita", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 323699, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234984/", Category: "thriller"}
 	success := CreateBook(tBook)
@@ -114,7 +139,7 @@ func TestUpsertBookVote(t *testing.T) {
 		t.Fail()
 		println("Failed to create book")
 	}
-	tBookVote := BookVote{BookID: tBook.ID, Rating: "5", Timestamp: time.Now()}
+	tBookVote := BookVote{BookID: tBook.ID, Rating: 5, Timestamp: time.Now()}
 	success = UpsertBookVote(tFaceBookID, tBookVote)
 	if !success {
 		t.Fail()
@@ -142,7 +167,7 @@ func TestUpsertBookVoteInvalidUser(t *testing.T) {
 		t.Fail()
 		println("Failed to create book")
 	}
-	tBookVote := BookVote{BookID: tBook.ID, Rating: "5", Timestamp: time.Now()}
+	tBookVote := BookVote{BookID: tBook.ID, Rating: 5, Timestamp: time.Now()}
 	success = UpsertBookVote(tFaceBookID, tBookVote)
 	if success {
 		t.Fail()
@@ -166,7 +191,7 @@ func TestUpsertBookVoteInvalidBook(t *testing.T) {
 	}
 	tBook := Book{AuthorName: "Kalle Anka", AuthorID: "23482970", ID: "23234984", Title: "The Master and Margarita", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 323699, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234984/", Category: "thriller"}
 
-	tBookVote := BookVote{BookID: tBook.ID, Rating: "5", Timestamp: time.Now()}
+	tBookVote := BookVote{BookID: tBook.ID, Rating: 4, Timestamp: time.Now()}
 	success = UpsertBookVote(tFaceBookID, tBookVote)
 	if success {
 		t.Fail()
