@@ -44,11 +44,13 @@ function vote(bookid, rating) {
         // of our request
         // this is called on every state change
         if (xhttp.readyState === 4 &&
-        xhttp.status === 200) {
-            console.log("Sent vote to server successfully...");
-        }
+        xhttp.status === 201) {
+            alert("Sent vote to server successfully...");
+        } else if (xhttp.readyState === 4 && xhttp.status === 400) {
+			alert("Server replied bad request...");	
+		}
 	};
  	xhttp.open("POST", "/user/vote/book/", true);
 	xhttp.setRequestHeader("Content-type", "application/json");
-	xhttp.send("{\"bookid\":\"" + bookid + "\", \"userid\":\"" + userid + "\",\"rating\":\"" + rating + "\"}");
+	xhttp.send("{\"bookid\":\"" + bookid + "\", \"userid\":\"" + userid + "\",\"rating\":" + rating + "}");
 }

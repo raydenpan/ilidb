@@ -2,6 +2,7 @@ package db
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -17,6 +18,9 @@ const BooksCollection = "books"
 
 //UsersCollection Users collection
 const UsersCollection = "users"
+
+//SessionsCollection Session collection
+const SessionsCollection = "sessions"
 
 func getDatabaseCollection(aCollection string) *mgo.Collection {
 	//TODO close all connections opened here
@@ -52,6 +56,23 @@ func AddLoginToken(aUserFacebookID string, aLoginToken LoginToken) bool {
 	tokens, _ := json.Marshal(&result.LoginTokens)
 	fmt.Printf("LoginTokens:" + string(tokens) + "\n")
 	return true
+}
+
+//FetchUserSession fetch user session if it exists, otherwise return error
+func FetchUserSession(aUserID string, aSessionToken string) (string, error) {
+	fmt.Printf("Fetching user session data for UserID:" + aUserID + "\n")
+	tCollection := getDatabaseCollection(UsersCollection)
+	var tUser User
+	err := tCollection.Find(bson.M{"facebookid": aUserID}).One(&tUser)
+	if nil != err || nil == tUser.LoginTokens {
+		return "", errors.New("could not find user session")
+	}
+	for i := 0; i < len(tUser.LoginTokens); i++ {
+		if tUser.LoginTokens[i].Value == aSessionToken {
+			return aUserID, nil
+		}
+	}
+	return "", errors.New("")
 }
 
 //upsertBookVoteExistingUser add a book vote to an existing user

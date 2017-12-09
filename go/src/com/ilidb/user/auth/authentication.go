@@ -44,19 +44,27 @@ func CreateILIDBLoginToken() db.LoginToken {
 	return tLoginToken
 }
 
+//AuthenticateUserSession authenticate user session for request
+func AuthenticateUserSession(aUserIDCookieValue string, aSessionCookieValue string) (string, error) {
+	return db.FetchUserSession(aUserIDCookieValue, aSessionCookieValue)
+}
+
 //HandleFacebookLogin Handle a Facebook user login
-func HandleFacebookLogin(aFacebookeUserLoginCode string) db.LoginResult {
-	var tFacebookUserToken = FetchFacebookUserToken(aFacebookeUserLoginCode)
+func HandleFacebookLogin(aFacebookUserLoginCode string) (db.LoginResult, error) {
+	tFacebookUserToken, err := FetchFacebookUserToken(aFacebookUserLoginCode)
+	if nil != err {
+		return db.LoginResult{}, err
+	}
 
-	var tFacebookUser web.FacebookUser
-	tFacebookUser = AuthenticateFacebookUserToken(tFacebookUserToken)
+	tFacebookUser, err := AuthenticateFacebookUserToken(tFacebookUserToken)
+	if nil != err {
+		return db.LoginResult{}, err
+	}
 
-	var tLoginToken db.LoginToken
-	tLoginToken = CreateILIDBLoginToken()
+	tLoginToken := CreateILIDBLoginToken()
 
-	var tLoginResult db.LoginResult
-	tLoginResult = CreateUserSession(tFacebookUser, tLoginToken)
-	return tLoginResult
+	tLoginResult := CreateUserSession(tFacebookUser, tLoginToken)
+	return tLoginResult, nil
 }
 
 // CreateUserSession Create a user session

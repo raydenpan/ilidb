@@ -7,6 +7,30 @@ import (
 	"time"
 )
 
+func TestAuthenticateUserSession(t *testing.T) {
+	tName := "test Pekka"
+	db.DeleteUserByName(tName)
+	tFacebookUser := web.FacebookUser{ID: "5ad3s131231", Name: tName}
+	tLoginToken := db.LoginToken{Value: "35345dfgfdgfdgdfg", Created: time.Now()}
+	result := CreateUserSession(tFacebookUser, tLoginToken)
+	if result.Result != true {
+		t.Fail()
+		println("Could not create user session for user: " + tName)
+	}
+	tUserID, err := AuthenticateUserSession(tFacebookUser.ID, tLoginToken.Value)
+	if nil != err {
+		println(err.Error())
+		t.Fail()
+	}
+	if "" == tUserID {
+		println("Did not find session for user...")
+		t.Fail()
+	}
+	if !db.DeleteUserByName(tName) {
+		t.Fail()
+	}
+}
+
 func TestCreateUserSessionNewUser(t *testing.T) {
 	tName := "test Pekka"
 	db.DeleteUserByName(tName)
