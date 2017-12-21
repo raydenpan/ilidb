@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"com/ilidb/common"
 	"com/ilidb/db"
-	"fmt"
 	"html/template"
 )
 
@@ -17,12 +16,41 @@ func GenerateIndexPage() string {
 	return topString + tIndexMainString + pageSideString + footString
 }
 
+//GenerateLoginPage Login page.
+func GenerateLoginPage() string {
+	topString := generatePageTop()
+	tIndexMainString := common.LoadHTMLFileAsString("mainLogin.html")
+	pageSideString := generatePageSideBookCategories()
+	footString := generatePageFoot()
+	return topString + tIndexMainString + pageSideString + footString
+}
+
 //GenerateBooksPage Books page.
 func GenerateBooksPage() string {
-	fmt.Printf("Fetching popular books\n")
-
 	tBooksIter := db.FetchPopularBooks(20)
 	pageMainString := executeTemplate("mainBooks.html", tBooksIter)
+
+	topString := generatePageTop()
+	pageSideString := generatePageSideBookCategories()
+	footString := generatePageFoot()
+	return topString + pageMainString + pageSideString + footString
+}
+
+//GenerateSearchPage Search page.
+func GenerateSearchPage(aQuery string) string {
+	tSearchResult := db.SearchBookTitle(aQuery)
+	pageMainString := executeTemplate("mainSearch.html", tSearchResult)
+
+	topString := generatePageTop()
+	pageSideString := generatePageSideBookCategories()
+	footString := generatePageFoot()
+	return topString + pageMainString + pageSideString + footString
+}
+
+//GenerateUserVotesPage User votes page.
+func GenerateUserVotesPage(aUser db.User) string {
+	tUserBookVotes := aUser.BookVotes
+	pageMainString := executeTemplate("mainUserVotes.html", tUserBookVotes)
 
 	topString := generatePageTop()
 	pageSideString := generatePageSideBookCategories()
@@ -50,6 +78,15 @@ func GenerateBookPage(aBookID string) string {
 	pageMainString := executeTemplate("mainBook.html", tBook)
 
 	topString := generatePageTop()
+	pageSideString := generatePageSideBookCategories()
+	footString := generatePageFoot()
+	return topString + pageMainString + pageSideString + footString
+}
+
+//GenerateBookPage Book page.
+func GenerateContributePage() string {
+	topString := generatePageTop()
+	pageMainString := common.LoadHTMLFileAsString("contribute.html")
 	pageSideString := generatePageSideBookCategories()
 	footString := generatePageFoot()
 	return topString + pageMainString + pageSideString + footString

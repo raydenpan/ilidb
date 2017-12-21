@@ -59,20 +59,20 @@ func AddLoginToken(aUserFacebookID string, aLoginToken LoginToken) bool {
 }
 
 //FetchUserSession fetch user session if it exists, otherwise return error
-func FetchUserSession(aUserID string, aSessionToken string) (string, error) {
+func FetchUserSession(aUserID string, aSessionToken string) (User, error) {
 	fmt.Printf("Fetching user session data for UserID:" + aUserID + "\n")
 	tCollection := getDatabaseCollection(UsersCollection)
 	var tUser User
 	err := tCollection.Find(bson.M{"facebookid": aUserID}).One(&tUser)
 	if nil != err || nil == tUser.LoginTokens {
-		return "", errors.New("could not find user session")
+		return tUser, errors.New("could not find user session")
 	}
 	for i := 0; i < len(tUser.LoginTokens); i++ {
 		if tUser.LoginTokens[i].Value == aSessionToken {
-			return aUserID, nil
+			return tUser, nil
 		}
 	}
-	return "", errors.New("")
+	return tUser, errors.New("")
 }
 
 //upsertBookVoteExistingUser add a book vote to an existing user
@@ -152,6 +152,26 @@ func UpsertBookVote(aUserID string, aBookVote BookVote) bool {
 	return upsertBookVoteExistingUser(aUserID, aBookVote)
 }
 
+//FetchUserBookVote Fetch user vote for a book
+func FetchUserBookVote(aUserID string, aBookID string) (BookVote, error) {
+	// Check that user exists
+	var tBookVote BookVote
+	tUser, err := FetchUser(aUserID)
+	if nil != err || "" == tUser.FacebookID {
+		println("Could not find user with facebookID:" + aUserID)
+		return tBookVote, errors.New("Could not find user with facebookID:" + aUserID)
+	}
+	if nil == tUser.BookVotes {
+		return tBookVote, errors.New("could not find user book votes")
+	}
+	for i := 0; i < len(tUser.BookVotes); i++ {
+		if tUser.BookVotes[i].BookID == aBookID {
+			return tUser.BookVotes[i], nil
+		}
+	}
+	return tBookVote, errors.New("")
+}
+
 //DeleteBook delete a book from books collection
 func DeleteBook(aBookID string) bool {
 	tCollection := getDatabaseCollection(BooksCollection)
@@ -222,4 +242,23 @@ func DeleteUserByName(aName string) bool {
 		return false
 	}
 	return true
+}
+
+//SearchBookTitle Search book titles
+func SearchBookTitle(aSearchString string) []Book {
+	tLimit := 5
+	tCollection := getDatabaseCollection(BooksCollection)
+	tBooksIter := tCollection.Find(bson.M{"title": bson.M{"$regex": bson.RegEx{Pattern: aSearchString + ".*", Options: "i"}}}).Limit(tLimit).Iter()
+	tBooks := make([]Book, tLimit)
+	var tBook Book
+	i := 0
+	for tBooksIter.Next(&tBook) {
+		tBooks[i] = tBook
+		i++
+	}
+	//If fewer results than limit
+	if i < tLimit {
+		tBooks = tBooks[0:i]
+	}
+	return tBooks
 }

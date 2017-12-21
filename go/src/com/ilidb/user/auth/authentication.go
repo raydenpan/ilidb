@@ -45,7 +45,7 @@ func CreateILIDBLoginToken() db.LoginToken {
 }
 
 //AuthenticateUserSession authenticate user session for request
-func AuthenticateUserSession(aUserIDCookieValue string, aSessionCookieValue string) (string, error) {
+func AuthenticateUserSession(aUserIDCookieValue string, aSessionCookieValue string) (db.User, error) {
 	return db.FetchUserSession(aUserIDCookieValue, aSessionCookieValue)
 }
 

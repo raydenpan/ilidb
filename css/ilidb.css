@@ -8,7 +8,7 @@ body {
 
 div#top {
     width:100%;
-    height:60px;
+    height:80px;
     border-bottom:1px solid #000;
     margin-left: auto;
     margin-right: auto;
@@ -17,7 +17,7 @@ div#top {
 
 div#login {
     float:right;
-    width:19%;
+    width:15%;
     height: 30px;
     margin:0px;
     padding:5px;
@@ -31,7 +31,7 @@ div#logo {
 
 div#menu {
     float:left;
-    width:460px;
+    width:30%;
     height: 90px;
 }
 
@@ -79,8 +79,22 @@ article.listbook {
     height: 40px;
     margin-left:10px;
 }
-
-a#logout {
-    margin: 0px;
-    padding: 0px;
+div.hidden {
+    display: none;
+    visibility:hidden;
+}
+button#search-button {
+    width:25%;
+    height:25px;
+    float:left;
+}
+input#search {
+    width:70%;
+    float:left;
+    height:20px;
+}
+div#search-container {
+    width: 30%;
+    height:40px;
+    float:left;
 }
