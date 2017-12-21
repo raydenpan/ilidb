@@ -1,0 +1,8 @@
+<div id="main">
+    <p>Search results:</p>
+    {{range .}}
+    <article class="listbook">
+        <a href={{.PageURL}}>{{.Title}} {{.NbrOfRatings}} {{.Category}}</a>
+    </article>
+    {{end}}
+</div>

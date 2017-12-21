@@ -1,4 +1,5 @@
     <div id="main">
             {{.Title}} by {{.AuthorName}} with votes:{{.NbrOfRatings}}
-            <p onclick="vote('{{.ID}}', 5)">CLICK HERE TO VOTE '5'</p>
+            <p id="clickVote" onclick="vote('{{.ID}}', 5)">CLICK HERE TO VOTE '5'</p>
+            <div id="bookId" class="hidden">{{.ID}}</div>
     </div>

@@ -59,9 +59,9 @@ function setCookie(name, id, token) {
 	// 10 years expiry date
     d.setTime(d.getTime() + 315360000);
     var expires = d.toUTCString();
-    document.cookie = "name=" + name + "; expires=" + expires + "; path=/";
-	document.cookie = "id=" + id + "; expires=" + "; path=/";
-	document.cookie = "token=" + token + "; expires=" + "; path=/";
+    document.cookie = "name=" + name + "; expires=" + expires + "; path=/;";
+	document.cookie = "id=" + id + "; expires=" + "; path=/;";
+	document.cookie = "token=" + token + "; expires=" + "; path=/;";
 }
 
 // This function is called when someone finishes with the Login

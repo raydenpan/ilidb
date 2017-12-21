@@ -16,30 +16,31 @@ import (
 	"os"
 )
 
-func validateSessionCookies(w http.ResponseWriter, r *http.Request) string {
+func validateSessionCookies(w http.ResponseWriter, r *http.Request) db.User {
+	var tUser db.User
 	tSessionCookie, err := r.Cookie("loginToken")
 	if nil != err || nil == tSessionCookie || "" == tSessionCookie.Value {
 		fmt.Printf("User authentication failed, missing cookie with name loginToken...\n")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(nil)
-		return ""
+		return tUser
 	}
 	tUserIDCookie, err := r.Cookie("id")
 	if nil != err || nil == tUserIDCookie || "" == tUserIDCookie.Value {
 		fmt.Printf("User authentication failed, missing cookie with name id...\n")
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(nil)
-		return ""
+		return tUser
 	}
 	fmt.Printf("User authentication against DB, UserIDCookieValue:" + tUserIDCookie.Value + "SessionCookieValue:" + tSessionCookie.Value + "\n")
-	tUserID, err := auth.AuthenticateUserSession(tUserIDCookie.Value, tSessionCookie.Value)
+	tUser, err = auth.AuthenticateUserSession(tUserIDCookie.Value, tSessionCookie.Value)
 	if nil != err {
 		fmt.Printf(err.Error())
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write(nil)
-		return ""
+		return tUser
 	}
-	return tUserID
+	return tUser
 }
 
 func userAuthenticateFacebookHandler(w http.ResponseWriter, req *http.Request) {
@@ -64,13 +65,7 @@ func userAuthenticateFacebookHandler(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, "/", http.StatusSeeOther)
 }
 
-func userVoteBookHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
-	tAuthenticatedUserID := validateSessionCookies(w, r)
-	if "" == tAuthenticatedUserID {
-		return
-	}
-
+func handleCreateUserBookVote(w http.ResponseWriter, r *http.Request, aAuthenticatedUserID string) {
 	decoder := json.NewDecoder(r.Body)
 	var tBookVote web.BookVote
 	err := decoder.Decode(&tBookVote)
@@ -89,7 +84,7 @@ func userVoteBookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("Voting for book, BookID: " + tBookVote.BookID + " Rating:" + strconv.Itoa(tBookVote.Rating) + "\n")
 	tDBBookVote := db.BookVote{BookID: tBookVote.BookID, Rating: tBookVote.Rating, Timestamp: time.Now()}
-	tSuccess := db.UpsertBookVote(tAuthenticatedUserID, tDBBookVote)
+	tSuccess := db.UpsertBookVote(aAuthenticatedUserID, tDBBookVote)
 	if tSuccess {
 		w.WriteHeader(http.StatusCreated)
 		w.Write(nil)
@@ -99,19 +94,64 @@ func userVoteBookHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func pageNotFoundHandler(w http.ResponseWriter, r *http.Request) {
-	// TODO set content header on all?
+func handleFetchUserBookVote(w http.ResponseWriter, r *http.Request, aAuthenticatedUserID string) {
+	tBookID := strings.Split(r.URL.Path[1:], "/")[3]
+	fmt.Printf("Fetching vote for book: " + tBookID + "\n")
+
+	tBookVote, err := db.FetchUserBookVote(aAuthenticatedUserID, tBookID)
+	if nil != err {
+		http.NotFound(w, r)
+		return
+	}
+	fmt.Printf("Found vote for book: " + tBookID + " with rating:" + strconv.Itoa(tBookVote.Rating) + "\n")
+
+	json.NewEncoder(w).Encode(tBookVote)
+}
+
+func fetchUserVotesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+
+	tAuthenticatedUser := validateSessionCookies(w, r)
+	if tAuthenticatedUser.FacebookID == "" {
+		return
+	}
+
+	fmt.Printf("Fetching user book votes\n")
+	tUserVotesPageString := web.GenerateUserVotesPage(tAuthenticatedUser)
+	fmt.Fprintf(w, tUserVotesPageString)
+}
+
+func userVoteBookHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+	tAuthenticatedUser := validateSessionCookies(w, r)
+	if tAuthenticatedUser.FacebookID == "" {
+		return
+	}
+	if r.Method == "POST" {
+		handleCreateUserBookVote(w, r, tAuthenticatedUser.FacebookID)
+	} else if r.Method == "GET" {
+		handleFetchUserBookVote(w, r, tAuthenticatedUser.FacebookID)
+	}
+}
+
+func pageNotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	http.NotFound(w, r)
 }
 
+func loginPageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+
+	tLoginPageString := web.GenerateLoginPage()
+	fmt.Fprintf(w, tLoginPageString)
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
 	// TODO set content header on all?
 	if r.URL.Path != "/" {
 		pageNotFoundHandler(w, r)
 		return
 	}
-	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
 	w.Header().Set("Content-Type", "text/html")
 	tIndexPageString := web.GenerateIndexPage()
 	fmt.Fprintf(w, tIndexPageString)
@@ -150,10 +190,35 @@ func bookHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, bookPage)
 }
 
-func statsHandler(w http.ResponseWriter, r *http.Request) {
+func contributeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
-	tPageString := common.LoadHTMLFileAsString("stats.html")
-	fmt.Fprintf(w, tPageString)
+
+	contributePage := web.GenerateContributePage()
+	fmt.Fprintf(w, contributePage)
+}
+
+func searchHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+
+	// TODO fix me
+	tSearchQuery := r.FormValue("q")
+	fmt.Printf("Searching for: " + tSearchQuery + "\n")
+	// TODO sql injections
+
+	result := db.SearchBookTitle(tSearchQuery)
+	json.NewEncoder(w).Encode(result)
+}
+
+func searchPageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload")
+
+	// TODO fix me
+	tSearchQuery := r.FormValue("q")
+	fmt.Printf("Searching for: " + tSearchQuery + "\n")
+	// TODO sql injections
+
+	tSearchPage := web.GenerateSearchPage(tSearchQuery)
+	fmt.Fprintf(w, tSearchPage)
 }
 
 func userAuthenticateErrorHandler(w http.ResponseWriter, r *http.Request) {
@@ -185,9 +250,6 @@ func main() {
 	//Main page, index.html
 	http.HandleFunc("/", indexHandler)
 
-	//Page not found handler
-	http.HandleFunc("/+", pageNotFoundHandler)
-
 	// Authenticate Facebook
 	// No trailing slash since FB will append URL params when redirecting
 	http.HandleFunc("/user/authenticate/facebook", userAuthenticateFacebookHandler)
@@ -198,13 +260,25 @@ func main() {
 	// Vote
 	http.HandleFunc("/user/vote/book/", userVoteBookHandler)
 
+	// Vote
+	http.HandleFunc("/user/votes/", fetchUserVotesHandler)
+
+	// Vote
+	http.HandleFunc("/login", loginPageHandler)
+
+	// Contribute
+	http.HandleFunc("/contribute/", contributeHandler)
+
+	// Search
+	http.HandleFunc("/search", searchHandler)
+
+	// Search page
+	http.HandleFunc("/find", searchPageHandler)
+
 	// Book
 	http.HandleFunc("/books/category/", booksCategoryHandler)
 	http.HandleFunc("/books/", booksHandler)
 	http.HandleFunc("/book/", bookHandler)
-
-	// Stats
-	http.HandleFunc("/stats/", statsHandler)
 
 	myTLSConfig := &tls.Config{
 		MinVersion:               tls.VersionTLS12,
