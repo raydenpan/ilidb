@@ -4,14 +4,25 @@ body {
     padding: 0px;
     margin-left: auto;
     margin-right: auto;
+    font-family: Verdana, Arial, sans-serif;
+}
+
+body a {
+    text-decoration: none;
+    color:rgb(64, 207, 136);
+}
+
+a.logo {
+    font-size: 18px;
+    font-weight: bold;
 }
 
 div#top {
     width:100%;
     height:80px;
-    border-bottom:1px solid #000;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 3px;
     padding: 0px;
 }
 
@@ -20,19 +31,19 @@ div#login {
     width:15%;
     height: 30px;
     margin:0px;
-    padding:5px;
 }
 
-div#logo {
+div#logotext {
+    margin-top: 2%;
     float:left;
-    width:170px;
-    height: 30px;
+    width:10%;
 }
 
 div#menu {
     float:left;
-    width:30%;
+    width:20%;
     height: 90px;
+    margin-left:5%;
 }
 
 div#body {
@@ -54,18 +65,13 @@ div#side {
     float:left;
 }
 
-article.hero {
-    height: 230px;
-    width: 100%;
-    padding:10px;
-}
-
-div#heroimagepart {
-    height: 220px;
-    width: 225px;
+img#facebook {
+    height: 40px;
+    width: 40px;
     margin:0px;
-    padding: 2px;
-    float:left;
+    padding:2px;
+    float:right;
+    margin-top: 8px;
 }
 
 article.standard {
@@ -83,18 +89,76 @@ div.hidden {
     display: none;
     visibility:hidden;
 }
-button#search-button {
-    width:25%;
-    height:25px;
-    float:left;
-}
-input#search {
-    width:70%;
-    float:left;
-    height:20px;
-}
-div#search-container {
-    width: 30%;
+input#search-button {
+    width:40px;
     height:40px;
     float:left;
+    cursor: pointer;
+    margin-left: 5px;
+}
+input#search {
+    width:75%;
+    float:left;
+    height:25px;
+    margin-top:5px;
+}
+div#search-container {
+    width: 40%;
+    height:40px;
+    float:left;
+    margin-top: 8px;   
+}
+div.iconholder {
+    width: 60%;
+    float:left;
+}
+p.title{
+    font-weight:bold;
+    font-size:18px;
+}
+p.startext{
+    margin-top:0px;
+    margin-bottom:0px;
+    font-weight:bold;
+    font-size:12px;
+    float: left;
+}
+p.startextmini{
+    margin-top:0px;
+    margin-bottom:0px;
+    font-size:8px;
+    float: left;
+}
+img.megaicon {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+img.star {
+    width: 20%;
+    float: left;
+}
+img.bookicon {
+    width: 20%;
+    float: left;
+}
+div#bookinfo {
+    width: 70%;
+    float: left;
+    margin-left: 1%;
+    font-size:12px;
+}
+img#logo {
+    width: 100%;
+}
+div#voteholder {
+    float: left;
+    width: 100%;
+}
+div.starholder {
+    float: left;
+    width: 30%;
+    vertical-align: middle; 
+    text-align: center;
 }

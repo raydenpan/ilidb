@@ -4,23 +4,28 @@
     <link rel="stylesheet" type="text/css" href="/css/ilidb.css">
 </head>
 <body>
-    <div id="page">
+    <img id="logo" src="/img/books.png"></img>
+    <div>
         <div id="top">
-            <div id="logo"><a href="/">ILIDB</a></div>
+            <div id="logotext"><a class="logo" href="/">ILIDB</a></div>
             <div id="menu">
-                <a href="/books/">Books</a>
+                <div class="iconholder">
+                        <a href="/books/"><p>Top books</p></a>
+                </div>
             </div>
             <div id="search-container">
                 <form method="get" action="/find">
-                    <input id="search" name="q" class="form-control" placeholder="Search Ilidb" autocapitalize="off" autocorrect="off" autocomplete="off" type="text">
-                    <button id="search-button" type="submit">Search</button>
+                    <input id="search" name="q" class="form-control" placeholder=" Search books, authors..." autocapitalize="off" autocorrect="off" autocomplete="off" type="text">
+                    <input id="search-button" src="/img/search.png" type="image" title="Search"></input>
                 </form>
                 <div id="searchresults">
                 </div>
             </div>
             <div id="login">
-                <div id="fb_login">
-                    <a href="https://www.facebook.com/v2.10/dialog/oauth?client_id=180292159051019&state=asdas486dasdasd&scope=public_profile,email&redirect_uri=https://www.ilidb.com/user/authenticate/facebook">Facebook</a>
+                <div>
+                    <a href="https://www.facebook.com/v2.10/dialog/oauth?client_id=180292159051019&state=asdas486dasdasd&scope=public_profile,email&redirect_uri=https://www.ilidb.com/user/authenticate/facebook">
+                        <img id="facebook" src="/img/facebook.png" title="Sign in with Facebook"></img>
+                    </a>
                 </div>
                 <div id="status">
                 </div>

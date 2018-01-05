@@ -1,0 +1,7 @@
+<article id="newbooks">
+        <p>New books:</p>
+        {{range .}}
+        <p><a href={{.PageURL}}>{{.Title}} {{.NbrOfRatings}} {{.Category}}</a></p>
+        {{end}}
+        </br>
+</article>

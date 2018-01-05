@@ -10,10 +10,28 @@ import (
 //GenerateIndexPage Index page.
 func GenerateIndexPage() string {
 	topString := generatePageTop()
-	tIndexMainString := common.LoadHTMLFileAsString("mainIndex.html")
-	pageSideString := generatePageSideBookCategories()
+	tIndexMainBeginning := "<div id=\"main\">"
+
+	tContentTrendingBooks := GenerateContentTrendingBooks()
+	tContentNewBooks := GenerateContentNewBooks()
+
+	tIndexMainEnd := "</div>"
 	footString := generatePageFoot()
-	return topString + tIndexMainString + pageSideString + footString
+	return topString + tIndexMainBeginning + tContentTrendingBooks + tContentNewBooks + tIndexMainEnd + footString
+}
+
+//GenerateContentTrendingBooks Popular trending books.
+func GenerateContentTrendingBooks() string {
+	tBooksIter := db.FetchPopularBooks(20)
+	tContentTrendingBooksString := executeTemplate("contentTrendingBooks.html", tBooksIter)
+	return tContentTrendingBooksString
+}
+
+//GenerateContentNewBooks Popular new books.
+func GenerateContentNewBooks() string {
+	tBooksIter := db.FetchPopularBooks(20)
+	tContentNewBooksString := executeTemplate("contentNewBooks.html", tBooksIter)
+	return tContentNewBooksString
 }
 
 //GenerateLoginPage Login page.
@@ -83,7 +101,7 @@ func GenerateBookPage(aBookID string) string {
 	return topString + pageMainString + pageSideString + footString
 }
 
-//GenerateBookPage Book page.
+//GenerateContributePage Contribute page.
 func GenerateContributePage() string {
 	topString := generatePageTop()
 	pageMainString := common.LoadHTMLFileAsString("contribute.html")

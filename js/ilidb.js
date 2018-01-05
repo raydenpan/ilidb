@@ -26,9 +26,9 @@ function checkLogin() {
 			// this is called on every state change
 			if (xhttp.readyState === 4 && xhttp.status === 200) {
 				var data = JSON.parse(xhttp.responseText);
-				var clickVote = document.getElementById("clickVote");
+				var clickVote = document.getElementById("clickvotetext");
 				clickVote.onclick="";
-				clickVote.innerText="You have voted:" + data.Rating;
+				clickVote.innerText="You: " + data.Rating;
 			} else if (xhttp.readyState === 4 && xhttp.status === 400) {
 				alert("Server replied bad request...");	
 			}
@@ -37,15 +37,18 @@ function checkLogin() {
 		xhttp.send();
 	}
 }
+
 function logOut() {
 	deleteCookie('name');
 	deleteCookie('id');
 	deleteCookie('loginToken');
 	window.location.reload(false);
 }
+
 function deleteCookie(name) {
 	document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;';
 }
+
 function readCookie(name) {
 	var nameEQ = name + "=";
 	var ca = document.cookie.split(';');
@@ -56,6 +59,7 @@ function readCookie(name) {
 	}
 	return null;
 }
+
 function vote(bookid, rating) {
 	var userid = readCookie('id')
 	if (undefined == userid || '' == userid) {
@@ -85,6 +89,7 @@ function vote(bookid, rating) {
 	xhttp.setRequestHeader("Content-type", "application/json");
 	xhttp.send("{\"bookid\":\"" + bookid + "\", \"userid\":\"" + userid + "\",\"rating\":" + rating + "}");
 }
+
 var resultDiv = document.getElementById("searchresults");
 function doSearch(e) {
 	var keynum;

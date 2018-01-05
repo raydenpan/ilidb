@@ -91,10 +91,10 @@ func TestFetchUserSession(t *testing.T) {
 		t.Fail()
 		println("Failed to add LoginToken")
 	}
-	tUserID, err := FetchUserSession(tFaceBookID, tLoginToken.Value)
+	tUser, err := FetchUserSession(tFaceBookID, tLoginToken.Value)
 	if nil != err {
 		t.Fail()
-		println("Failed to fetch user session for UserID: " + tUserID)
+		println("Failed to fetch user session for UserID: " + tUser.FacebookID)
 	}
 	if !DeleteUserByName(tUserName) {
 		t.Fail()
@@ -281,10 +281,10 @@ func printBook(book Book) string {
 }
 
 func TestCreateBooks(t *testing.T) {
-	tBook1 := Book{AuthorID: "23482971", ID: "23234967", Title: "The Master and Margarita1", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 14, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234967/", Category: "thriller"}
-	tBook2 := Book{AuthorID: "23482971", ID: "23234968", Title: "The Master and Margarita2", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 788899, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234968/", Category: "thriller"}
-	tBook3 := Book{AuthorID: "23482971", ID: "23234969", Title: "The Master and Margarita3", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 9123431, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234969/", Category: "scifi"}
-	tBook4 := Book{AuthorID: "23482971", ID: "23234970", Title: "The Master and Margarita4", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 12333, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234970/", Category: "fantasy"}
+	tBook1 := Book{AuthorName: "Mikhail Bulgakov", AuthorID: "23482971", ID: "23234967", Title: "The Master and Margarita1", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 14, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234967/", Category: "thriller"}
+	tBook2 := Book{AuthorName: "Mikhail Bulgakov", AuthorID: "23482971", ID: "23234968", Title: "The Master and Margarita2", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 788899, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234968/", Category: "thriller"}
+	tBook3 := Book{AuthorName: "Mikhail Bulgakov", AuthorID: "23482971", ID: "23234969", Title: "The Master and Margarita3", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 9123431, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234969/", Category: "scifi"}
+	tBook4 := Book{AuthorName: "Mikhail Bulgakov", AuthorID: "23482971", ID: "23234970", Title: "The Master and Margarita4", OriginalLanguage: "Bulgaria", ReleaseYear: "1923", NbrOfPages: "478", TopReview: "This book is taking place in the eastern europe in the beginning of the 20th century", Rating: "7.7", NbrOfRatings: 12333, ImgURL: "/img/bb/23234984.jpg", PageURL: "/book/b23234970/", Category: "fantasy"}
 
 	success1 := CreateBook(tBook1)
 	success2 := CreateBook(tBook2)

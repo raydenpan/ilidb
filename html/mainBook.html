@@ -1,5 +1,20 @@
-    <div id="main">
-            {{.Title}} by {{.AuthorName}} with votes:{{.NbrOfRatings}}
-            <p id="clickVote" onclick="vote('{{.ID}}', 5)">CLICK HERE TO VOTE '5'</p>
-            <div id="bookId" class="hidden">{{.ID}}</div>
+<div id="main">
+    <img class="bookicon" src="/img/book.png"/>
+    <div id="bookinfo">
+        <div id="voteholder">
+            <div class="starholder">
+                <img class="star" src="/img/star_yellow.png"/> 
+                <p class="startext">{{.Rating}}</p>
+                <p class="startextmini">by {{.NbrOfRatings}} votes</p>
+            </div>
+            <div class="starholder">
+                <img id="clickvote" class="star" src="/img/star_white.png" onclick="vote('{{.ID}}', 5)"/> 
+                <p class="startext" id="clickvotetext">Click to vote</p>
+            </div>
+        </div>
+        <div id="bookId" class="hidden">{{.ID}}</div>
+        <p class="title">{{.Title}}</p>
+        <p>Author: <a href="/author/{{.AuthorID}}/">{{.AuthorName}}</a></p>
+        <p>Release year: {{.ReleaseYear}}</p>
     </div>
+</div>
